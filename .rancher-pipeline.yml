@@ -1,0 +1,26 @@
+stages:
+- name: Build
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: wp-test:dev
+      registry: 127.0.0.1:34607
+- name: Deployment
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
+    env:
+      DB_HOST: wp-mysql-dev
+      DB_NAME: wpdev
+      DB_PASS: "123456"
+  - applyYamlConfig:
+      path: ./mysql-deploy.yml
+    env:
+      MYSQL_DATABASE: wpdev
+      MYSQL_ROOT_PASSWORD: "123456"
+timeout: 60
+branch:
+  include:
+  - dev
+notification: {}
